@@ -63,7 +63,7 @@ async def _generate_code(task: Task, step: Step) -> Step:
     step.output = code
 
     write_file(os.path.join(Agent.get_workspace(task.task_id), file_path), code)
-    path = Path("./" + file_path)
+    path = Path(f"./{file_path}")
     await Agent.db.create_artifact(
         task_id=task.task_id,
         step_id=step.step_id,

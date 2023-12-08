@@ -55,8 +55,7 @@ def specify_file_paths(prompt: str, plan: str, model: str = 'gpt-3.5-turbo-0613'
             },
         ],
     )
-    result = file_paths.from_response(completion)
-    return result
+    return file_paths.from_response(completion)
 
 
 def plan(prompt: str, stream_handler: Optional[Callable[[bytes], None]] = None, model: str='gpt-3.5-turbo-0613', extra_messages: List[Any] = []):
@@ -85,8 +84,8 @@ def plan(prompt: str, stream_handler: Optional[Callable[[bytes], None]] = None, 
     collected_messages = []
     for chunk in completion:
         chunk_message_dict = chunk["choices"][0]
-        chunk_message = chunk_message_dict["delta"]  # extract the message
         if chunk_message_dict["finish_reason"] is None:
+            chunk_message = chunk_message_dict["delta"]  # extract the message
             collected_messages.append(chunk_message)  # save the message
             if stream_handler:
                 try:
@@ -94,9 +93,7 @@ def plan(prompt: str, stream_handler: Optional[Callable[[bytes], None]] = None, 
                 except Exception as err:
                     logger.info("\nstream_handler error:", err)
                     logger.info(chunk_message)
-    # if stream_handler and hasattr(stream_handler, "onComplete"): stream_handler.onComplete('done')
-    full_reply_content = "".join([m.get("content", "") for m in collected_messages])
-    return full_reply_content
+    return "".join([m.get("content", "") for m in collected_messages])
 
 
 @retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(6))
@@ -160,8 +157,8 @@ async def generate_code(prompt: str, plan: str, current_file: str, stream_handle
     collected_messages = []
     async for chunk in await completion:
         chunk_message_dict = chunk["choices"][0]
-        chunk_message = chunk_message_dict["delta"]  # extract the message
         if chunk_message_dict["finish_reason"] is None:
+            chunk_message = chunk_message_dict["delta"]  # extract the message
             collected_messages.append(chunk_message)  # save the message
             if stream_handler:
                 try:
